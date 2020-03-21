@@ -86,7 +86,7 @@ exports.commentOnScream = (req, res) => {
         createdAt: new Date().toISOString(),
         screamId: req.params.screamId,
         username: req.user.username,
-        userImage: req.user.imageUrl
+        userImage: req.user.imageUrl,
     };
 
     db.doc(`/screams/${req.params.screamId}`).get()
@@ -94,6 +94,7 @@ exports.commentOnScream = (req, res) => {
         if(!doc.exists){
             return res.status(404).json({error: 'Scream not found'});
         }
+        newComment.commentCount = doc.data().commentCount + 1;
         return doc.ref.update({commentCount: doc.data().commentCount + 1});
     })
     .then(() => {

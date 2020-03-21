@@ -3,6 +3,9 @@ const app = require('express')();
 
 const FBAuth = require('./utils/fbAuth');
 
+const cors = require('cors');
+app.use(cors());
+
 const {getAllScreams, postOneScream, getScream, commentOnScream, likeScream, unlikeScream, deleteScream} = require('./handlers/screams')
 const {signup, login, uploadImage, addUserDetails, getAuthenticatedUser, getUserDetails, markNotificationsRead} = require('./handlers/users');
 const {db} = require('./utils/admin');
@@ -64,7 +67,7 @@ exports.createNotificationOnComment = functions.region('europe-west1').firestore
         if(doc.exists  && doc.data().username !== snapshot.data().username){
             return db.doc(`/notifications/${snapshot.id}`).set({
                 createdAt: new Date().toISOString(),
-                recipient: doc.data().userHandle,
+                recipient: doc.data().username,
                 sender: snapshot.data().username,
                 type: 'comment',
                 read: false,
