@@ -133,7 +133,7 @@ class ScreamDialog extends Component{
 
          return (
              <Fragment>
-                 <MyButton onClick={this.handleOpen} tip="Expand Scream" tipClassName={classes.expandButton}>
+                 <MyButton onClick={this.handleOpen} tip="Expand Post" tipClassName={classes.expandButton}>
                      <UnfoldMore color="primary"/>
                  </MyButton>
                  <Dialog open={this.state.open} onClose={this.handleClose} fullWidth maxWidth="sm">

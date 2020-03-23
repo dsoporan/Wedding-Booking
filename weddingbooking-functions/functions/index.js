@@ -6,7 +6,7 @@ const FBAuth = require('./utils/fbAuth');
 const cors = require('cors');
 app.use(cors());
 
-const {getAllScreams, postOneScream, getScream, commentOnScream, likeScream, unlikeScream, deleteScream} = require('./handlers/screams')
+const {getAllScreams, postOneScream, getScream, commentOnScream, likeScream, unlikeScream, deleteScream, uploadPostPhotos} = require('./handlers/screams')
 const {signup, login, uploadImage, addUserDetails, getAuthenticatedUser, getUserDetails, markNotificationsRead} = require('./handlers/users');
 const {db} = require('./utils/admin');
 
@@ -19,6 +19,7 @@ app.delete('/scream/:screamId', FBAuth, deleteScream);
 app.get('/scream/:screamId/unlike', FBAuth, unlikeScream);
 app.get('/scream/:screamId/like', FBAuth, likeScream);
 app.post('/scream/:screamId/comment', FBAuth, commentOnScream);
+app.post('/scream/:screamId/photos', FBAuth, uploadPostPhotos);
 
 // Users Routes
 app.post('/signup', signup);

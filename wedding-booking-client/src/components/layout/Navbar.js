@@ -5,6 +5,8 @@ import PropTypes from 'prop-types';
 import MyButton from '../../util/MyButton';
 import PostScream from '../scream/PostScream';
 import Notifications from './Notifications';
+// import LogoImage from '../../images/logo-mare.png';
+
 
 //Material Design
 import AppBar from "@material-ui/core/AppBar";
@@ -22,6 +24,7 @@ export class Navbar extends Component {
     return (
       <AppBar>
         <Toolbar className="nav-container">
+          
           {authenticated ? (
               <Fragment>
                 <PostScream/>

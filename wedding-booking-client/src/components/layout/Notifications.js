@@ -81,7 +81,7 @@ class Notifications extends Component {
                     <MenuItem key={notif.createdAt} onClick={this.handleClose}>
                         {icon}
                         <Typography component={Link} color="initial" variant="body1" to={`/users/${notif.recipient}/scream/${notif.screamId}`}>
-                            {notif.sender} {verb} your scream {time}
+                            {notif.sender} {verb} your posts {time}
                         </Typography>
                     </MenuItem>
                 )

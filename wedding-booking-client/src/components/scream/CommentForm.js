@@ -51,7 +51,7 @@ export class CommentForm extends Component {
         const commentFormMarkup = authenticated ? (
             <Grid item sm={12} style={{textAlign: 'center'}}>
                 <form onSubmit={this.handleSubmit}>
-                    <TextField name="body" type="text" label="Comment on scream" error={errors.comment ? true : false}
+                    <TextField name="body" type="text" label="Comment on post" error={errors.comment ? true : false}
                      helperText={errors.comment} value={this.state.body} onChange={this.handleChange} fullWidth className={classes.textField}/>
 
                     <Button type="submit" variant="contained" color="primary" className={classes.button}>

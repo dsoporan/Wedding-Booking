@@ -51,6 +51,22 @@ exports.validateLoginData = (data) => {
 
 }
 
+
+exports.validatePostAdding = (data) => {
+    let errors = {}
+    if (isEmpty(data.name))
+        errors.name = 'Must not be empty';
+    if (isEmpty(data.body))
+        errors.name = 'Must not be empty';
+    if (isEmpty(data.price))
+        errors.name = 'Must not be empty';
+    
+    return {
+        errors,
+        valid: Object.keys(errors).length === 0 ? true : false
+    }
+}
+
 exports.reduceUserDetails = (data) => {
     let userDetails = {}
 

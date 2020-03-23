@@ -77,7 +77,7 @@ class PostScream extends Component{
         const {classes, UI: {loading}} = this.props;
         return (
             <Fragment>
-                <MyButton onClick={this.handleOpen} tip="Post a scream">
+                <MyButton onClick={this.handleOpen} tip="New Post">
                     <AddIcon/>
                 </MyButton>
                 <Dialog open={this.state.open} onClose={this.handleClose} fullWidth maxWidth="sm">
@@ -85,11 +85,11 @@ class PostScream extends Component{
                         <CloseIcon/>
                     </MyButton>
                     <DialogTitle>
-                        Post a new scream
+                        New post
                     </DialogTitle>
                     <DialogContent>
                         <form onSubmit={this.handleSubmit}>
-                            <TextField name="body" type="text" label="Scream" multiline rows="3" placeholder="New Scream" error={errors.body ? true : false}
+                            <TextField name="body" type="text" label="Post" multiline rows="3" placeholder="New Post" error={errors.body ? true : false}
                             helperText={errors.body} className={classes.textField} onChange={this.handleChange} fullWidth/>
                          <Button type="submit" variant="contained" color="primary" className={classes.submitButton} disabled={loading}>
                              Submit
