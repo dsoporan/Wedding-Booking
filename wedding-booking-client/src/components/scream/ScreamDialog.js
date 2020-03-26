@@ -7,6 +7,8 @@ import {Link} from 'react-router-dom';
 import Comments from './Comments'
 import CommentForm from './CommentForm';
 
+import { Slide } from 'react-slideshow-image';
+
 //MUI stuff
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -26,7 +28,7 @@ import {getScream, clearErrors, getScreams} from '../../redux/actions/dataAction
 const styles = {
     invisibleSeparator: {
         border: 'none',
-        margin: 4
+        margin: 10
     },
     profileImage: {
         maxWidth: 200,
@@ -39,7 +41,7 @@ const styles = {
     },
     closeButton: {
         position: 'absolute',
-        left : '92%'
+        left : '90%'
     },
     expandButton: {
         position: 'absolute',
@@ -54,7 +56,17 @@ const styles = {
         width: '100%',
         borderBottom: '1px solid rgba(0,0,0,0.1)',
         marginBottom: 20
-    }
+    },
+    slide: {
+        objectFit: 'cover',
+        width: '100%',
+        height: '300px'
+    },
+    photosPost: {
+        minWidth: '100%',
+        height: 300,
+        objectFit: 'cover'
+    },
 }
 
 class ScreamDialog extends Component{
@@ -90,11 +102,19 @@ class ScreamDialog extends Component{
         window.history.pushState(null, null, this.state.oldPath);
         this.setState({open:false});
         this.props.clearErrors();
-        //this.props.getScreams();
     }
 
     render(){
-        const {classes, scream : {screamId, body, createdAt, likeCount, commentCount, userImage, username, comments},
+        
+        const properties = {
+            duration: 5000,
+            transitionDuration: 500,
+            infinite: true,
+            indicators: true,
+            arrows: true,
+            pauseOnHover: true,
+        }
+        const {classes, scream : {photos, name, category, price, screamId, body, createdAt, likeCount, commentCount, userImage, username, comments},
          UI: {loading}} = this.props;
 
          const dialogMarkup = loading ? (
@@ -110,7 +130,7 @@ class ScreamDialog extends Component{
                     <Typography component={Link} color="primary" variant="h5" to={`/users/${username}`}>
                         {username}
                     </Typography>
-                    <hr className={classes.invisibleSeparator}/>
+                    <Typography variant="h6">{name}</Typography>
                     <Typography variant="body2" color="textSecondary">
                         {dayjs(createdAt).format('h:mm a, MMMM DD YYYY')}
                     </Typography>
@@ -118,6 +138,8 @@ class ScreamDialog extends Component{
                     <Typography variant="body1">
                         {body}
                     </Typography>
+                    <Typography variant="body1">Category: {category}</Typography>
+                    <Typography variant="h6">Price: {price} €</Typography>
                     <LikeButton screamId={screamId}/>
                     <span>{likeCount} Likes</span>
                     <MyButton tip="Comments">
@@ -125,6 +147,15 @@ class ScreamDialog extends Component{
                     </MyButton>
                     <span>{commentCount} Comments</span>
                  </Grid>
+                 {photos && (
+                     <Slide className={classes.slide} {...properties}>
+                         {photos.map((photo) => {return(
+                            <div key={photo} className="each-slide">
+                                <img className={classes.photosPost} src={photo} alt="Presentation"/>
+                            </div>
+                         )})}
+                    </Slide>
+                 )}
                  <hr className={classes.visibleSeparator}/>
                  <CommentForm screamId={screamId}/>
                  <Comments comments={comments}/>

@@ -21,6 +21,7 @@ import KeyboardReturn from '@material-ui/icons/KeyboardReturn';
 //Redux
 import {connect} from 'react-redux';
 import {logoutUser, uploadImage} from '../../redux/actions/userActions';
+import {getScreams} from '../../redux/actions/dataActions';
 import MyButton from '../../util/MyButton';
 
 
@@ -74,6 +75,12 @@ const styles = {
 };
 
 export class Profile extends Component {
+
+    componentDidUpdate(prevProps){
+        if (this.props.user.credentials.imageUrl !== prevProps.user.credentials.imageUrl){
+            this.props.getScreams();
+        }
+    }
 
     handleImageChange = (event) => {
         const image = event.target.files[0];
@@ -173,11 +180,12 @@ const mapStateToProps = (state) => ({
     user: state.user
 });
 
-const mapActionsToProps = {logoutUser, uploadImage};
+const mapActionsToProps = {logoutUser, uploadImage, getScreams};
 
 Profile.propTypes = {
     logoutUser: PropTypes.func.isRequired,
     uploadImage: PropTypes.func.isRequired,
+    getScreams: PropTypes.func.isRequired,
     user: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired
 }

@@ -57,9 +57,9 @@ exports.validatePostAdding = (data) => {
     if (isEmpty(data.name))
         errors.name = 'Must not be empty';
     if (isEmpty(data.body))
-        errors.name = 'Must not be empty';
+        errors.body = 'Must not be empty';
     if (isEmpty(data.price))
-        errors.name = 'Must not be empty';
+        errors.price = 'Must not be empty';
     
     return {
         errors,

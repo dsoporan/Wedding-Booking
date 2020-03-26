@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 
 
@@ -11,19 +12,23 @@ import TextField from '@material-ui/core/TextField';
 
 //redux
 import {connect} from 'react-redux';
-import {submitComment} from '../../redux/actions/dataActions'; 
+import {submitComment, getScreams} from '../../redux/actions/dataActions'; 
 
 const styles = {
     button: {
         marginTop: 10,
         marginBottom: 5
-    }
+    },
+    progressSpinner: {
+        position: 'absolute'
+    },
 }
 
 export class CommentForm extends Component {
     state = {
         body: '',
-        errors: {}
+        errors: {},
+        submitted: false
     }
 
     componentWillReceiveProps(nextProps){
@@ -42,10 +47,11 @@ export class CommentForm extends Component {
     handleSubmit = (event) => {
         event.preventDefault();
         this.props.submitComment(this.props.screamId, {body: this.state.body});
+        // this.props.getScreams();
     }
 
     render() {
-        const {classes, authenticated} = this.props;
+        const {classes, authenticated, UI: {loading}} = this.props;
         const errors = this.state.errors;
 
         const commentFormMarkup = authenticated ? (
@@ -56,6 +62,9 @@ export class CommentForm extends Component {
 
                     <Button type="submit" variant="contained" color="primary" className={classes.button}>
                         Submit
+                        {loading && (
+                                 <CircularProgress size={30} className={classes.progressSpinner}/>
+                             )}
                     </Button>
                 </form>
                 <hr className={classes.visibleSeparator}/>
@@ -67,6 +76,7 @@ export class CommentForm extends Component {
 
 CommentForm.propTypes = {
     submitComment : PropTypes.func.isRequired,
+    getScreams : PropTypes.func.isRequired,
     UI: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired,
     screamId: PropTypes.string.isRequired,
@@ -78,4 +88,4 @@ const mapStateToProps = (state) => ({
     authenticated: state.user.authenticated
 })
 
-export default connect(mapStateToProps, {submitComment})(withStyles(styles)(CommentForm));
+export default connect(mapStateToProps, {submitComment, getScreams})(withStyles(styles)(CommentForm));

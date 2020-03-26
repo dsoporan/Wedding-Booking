@@ -36,7 +36,7 @@ export const getScream = (screamId) => (dispatch) => {
 }
 
 //Post a scream
-export const postScream = (newScream) => (dispatch) => {
+export const postScream = (newScream, photos) => (dispatch) => {
     dispatch({type: LOADING_UI});
     axios.post('/scream', newScream)
     .then(res => {
@@ -45,6 +45,33 @@ export const postScream = (newScream) => (dispatch) => {
             payload: res.data
         });
         dispatch(clearErrors());
+        return res.data;
+    })
+    .then((res) => {
+        console.log(res);
+        console.log(photos);
+        if (photos[0].length > 0){
+            const formData = new FormData();
+            photos[0].forEach((photo, index) => {
+                formData.append('image' + index, photo, photo.name);
+            })
+            console.log(formData);
+            dispatch(uploadMultipleImages(res.screamId, formData));
+        }
+    })
+    .catch(err => {
+        dispatch({
+            type: SET_ERRORS,
+            payload: err.response.data
+        });
+    })
+}
+
+export const uploadMultipleImages = (screamId, formData) => (dispatch) => {
+    console.log(screamId)
+    axios.post(`/scream/${screamId}/photos`, formData)
+    .then(() => {
+        dispatch(getScream(screamId));
     })
     .catch(err => {
         dispatch({
@@ -82,6 +109,7 @@ export const unlikeScream = (screamId) => dispatch => {
 }
 
 export const submitComment = (screamId, commentData) => (dispatch) => {
+    dispatch({type: LOADING_UI})
     axios.post(`/scream/${screamId}/comment`, commentData)
     .then(res => {
         dispatch({

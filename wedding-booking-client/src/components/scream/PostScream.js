@@ -12,6 +12,16 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
 
+import DayPicker, { DateUtils } from 'react-day-picker';
+import 'react-day-picker/lib/style.css';
+import ImageUploader from 'react-images-upload';
+
+//Select
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+
 
 //Redux
 import {connect} from 'react-redux';
@@ -20,6 +30,11 @@ import {postScream, clearErrors} from '../../redux/actions/dataActions';
 const styles = {
     textField: {
         margin: '10px auto 10px auto',
+    },
+    formControl: {
+        margin: '10px 20px 10px auto',
+        minWidth: 120,
+
     },
     submitButton: {
         position: 'relative',
@@ -35,12 +50,23 @@ const styles = {
         left: '91%',
         top: '3%'
     },
+    divText: {
+        marginTop: '10px',
+    },
+    dayPicker: {
+        display: 'flow-root'
+    }
 }
 
 class PostScream extends Component{
     state = {
         open: false,
+        name: '',
         body: '',
+        category: 'Others',
+        price: '',
+        busyDates: [],
+        photos: [],
         errors: {}
     }
 
@@ -51,7 +77,14 @@ class PostScream extends Component{
             });
         }
         if(!nextProps.UI.errors && !nextProps.UI.loading){
-            this.setState({body: '', open:false, errors: {}});
+            this.setState({ name: '',
+            body: '',
+            category: 'Others',
+            price: '',
+            busyDates: [],
+            photos: [], 
+            open:false, 
+            errors: {}});
         }
     }
 
@@ -69,7 +102,33 @@ class PostScream extends Component{
 
     handleSubmit = (event) => {
         event.preventDefault();
-        this.props.postScream({body: this.state.body});
+        this.props.postScream({
+            name: this.state.name,
+            body: this.state.body,
+            category: this.state.category,
+            price: this.state.price,
+            busyDates: this.state.busyDates,
+        }, this.state.photos);
+        
+    }
+
+    handleDayClick = (day, { selected }) => {
+        const { busyDates } = this.state;
+        if (selected) {
+          const selectedIndex = busyDates.findIndex(selectedDay =>
+            DateUtils.isSameDay(selectedDay, day)
+          );
+          busyDates.splice(selectedIndex, 1);
+        } else {
+          busyDates.push(day);
+        }
+        console.log(busyDates);
+        this.setState({ busyDates });
+      }
+    onDrop = (picture) => {
+        const {photos} = this.state;
+        photos.push(picture);
+        this.setState({photos});
     }
 
     render(){
@@ -89,8 +148,29 @@ class PostScream extends Component{
                     </DialogTitle>
                     <DialogContent>
                         <form onSubmit={this.handleSubmit}>
-                            <TextField name="body" type="text" label="Post" multiline rows="3" placeholder="New Post" error={errors.body ? true : false}
+                            <TextField name="name" type="text" label="Add a name" placeholder="Post Name" error={errors.name ? true : false}
+                            helperText={errors.name} className={classes.textField} onChange={this.handleChange} fullWidth/>
+                            <TextField name="body" type="text" label="Add a post" multiline rows="3" placeholder="New Post" error={errors.body ? true : false}
                             helperText={errors.body} className={classes.textField} onChange={this.handleChange} fullWidth/>
+                            <FormControl name="category" className={classes.formControl}>
+                                <InputLabel>Category</InputLabel>
+                                <Select name="category" value={this.state.category} onChange={this.handleChange}>
+                                    <MenuItem value={'EventHall'}>Location / EventHall</MenuItem>
+                                    <MenuItem value={'Music'}>Music</MenuItem>
+                                    <MenuItem value={'Entertainment'}>Entertainment</MenuItem>
+                                    <MenuItem value={'Others'}>Others</MenuItem>
+                                </Select>
+                            </FormControl>
+                            <TextField name="price" type="text" label="Price" placeholder="€" error={errors.price ? true : false}
+                            helperText={errors.price} className={classes.textField} onChange={this.handleChange}/>
+                            <br/>
+                            <div className={classes.divText}>
+                            <span>Choose the dates that you are not available:</span>
+                            </div>
+                            <br/>
+                            <DayPicker className={classes.dayPicker} disabledDays={{ before: new Date() }} selectedDays={this.state.busyDates} onDayClick={this.handleDayClick}/>
+                            <br/>
+                            <ImageUploader withPreview={true} withIcon={true} buttonText='Choose images' onChange={this.onDrop} label="Upload maximum 5 images" imgExtension={['.jpg', '.png']} maxFileSize={5242880}/>
                          <Button type="submit" variant="contained" color="primary" className={classes.submitButton} disabled={loading}>
                              Submit
                              {loading && (
