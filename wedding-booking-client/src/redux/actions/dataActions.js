@@ -1,5 +1,5 @@
 import {SET_SCREAMS, LOADING_DATA, LIKE_SCREAM, UNLIKE_SCREAM, DELETE_SCREAM,
-     LOADING_UI, POST_SCREAM, CLEAR_ERRORS, SET_ERRORS,STOP_LOADING_UI, SET_SCREAM, SUBMIT_COMMENT} from '../types';
+     LOADING_UI, POST_SCREAM, CLEAR_ERRORS, SET_ERRORS,STOP_LOADING_UI, SET_SCREAM, SUBMIT_COMMENT, EDIT_SCREAM} from '../types';
 import axios from 'axios';
 
 //Get all screams
@@ -114,6 +114,24 @@ export const submitComment = (screamId, commentData) => (dispatch) => {
     .then(res => {
         dispatch({
             type: SUBMIT_COMMENT,
+            payload: res.data
+        })
+        dispatch(clearErrors());
+    })
+    .catch(err => {
+        dispatch({
+            type: SET_ERRORS,
+            payload: err.response.data
+        })
+    })
+} 
+
+export const editScream = (screamId, screamEdit) => (dispatch) => {
+    dispatch({type: LOADING_UI})
+    axios.post(`/scream/${screamId}/edit`, screamEdit)
+    .then(res => {
+        dispatch({
+            type: EDIT_SCREAM,
             payload: res.data
         })
         dispatch(clearErrors());

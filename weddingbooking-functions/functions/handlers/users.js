@@ -14,6 +14,7 @@ exports.signup = (req, res) => {
         password: req.body.password,
         confirmPassword: req.body.confirmPassword,
         username: req.body.username,
+        userType: req.body.userType,
     };
  
     const{valid, errors} = validateSignupData(newUser);
@@ -44,6 +45,7 @@ exports.signup = (req, res) => {
              token = idtoken;
              const userCredentials = {
                  username: newUser.username,
+                 userType: newUser.userType,
                  email: newUser.email,
                  createdAt: new Date().toISOString(),
                  imageUrl: `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/${noImg}?alt=media`,
@@ -122,13 +124,18 @@ exports.getUserDetails = (req, res) => {
         userData.screams = [];
         data.forEach(doc => {
             userData.screams.push({
+                screamId: doc.id,
                 body: doc.data().body,
-                createdAt: doc.data().createdAt,
+                busyDates: doc.data().busyDates,
+                category: doc.data().category,
+                name: doc.data().name,
+                price: doc.data().price,
+                photos: doc.data().photos,
                 username: doc.data().username,
-                userImage: doc.data().userImage,
-                likeCount: doc.data().likeCount,
+                createdAt: doc.data().createdAt,
                 commentCount: doc.data().commentCount,
-                screamId: doc.id
+                likeCount: doc.data().likeCount,
+                userImage: doc.data().userImage
             })
         })
         return res.json(userData);

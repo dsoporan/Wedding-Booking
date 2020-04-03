@@ -288,3 +288,37 @@ exports.deleteScream = (req, res) => {
         return res.status(500).json({error: err.code});
     });
 };
+
+
+//edit scream
+exports.editScream = (req, res) => {
+
+    const editScream = {
+        body: req.body.body,
+        name: req.body.name,
+        price: req.body.price,
+        busyDates: req.body.busyDates,
+		screamId: req.params.screamId
+    };
+
+    const{valid, errors} = validatePostAdding(editScream);
+
+    if (!valid)
+        return res.status(400).json(errors);
+
+
+    db.doc(`/screams/${req.params.screamId}`).get()
+    .then(doc => {
+        if(!doc.exists){
+            return res.status(404).json({error: 'Scream not found'});
+        }
+        return doc.ref.update({body: editScream.body, name: editScream.name, price: editScream.price, busyDates: editScream.busyDates});
+    })
+    .then(() => {
+        res.json(editScream);
+    })
+    .catch(err => {
+        console.error(err);
+        res.status(500).json({error: "Something went wrong"});
+    });
+};

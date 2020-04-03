@@ -19,7 +19,7 @@ import HomeIcon from '@material-ui/icons/Home';
 export class Navbar extends Component {
   render() {
 
-    const {authenticated} = this.props; 
+    const {authenticated, userType} = this.props; 
 
     return (
       <AppBar>
@@ -27,7 +27,7 @@ export class Navbar extends Component {
           
           {authenticated ? (
               <Fragment>
-                <PostScream/>
+                {userType && userType === 'Service Provider' ? (<PostScream/>) : null}
                 <Link to="/">
                 <MyButton tip="Home">
                     <HomeIcon/>
@@ -55,11 +55,13 @@ export class Navbar extends Component {
 }
 
 Navbar.propTypes = {
-    authenticated : PropTypes.bool.isRequired
+    authenticated : PropTypes.bool.isRequired,
+    userType : PropTypes.string
 }
 
 const mapStateToProps = state => ({
-  authenticated: state.user.authenticated
+  authenticated: state.user.authenticated,
+  userType: state.user.credentials.userType
 })
 
 export default connect(mapStateToProps)(Navbar);

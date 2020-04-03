@@ -67,6 +67,21 @@ exports.validatePostAdding = (data) => {
     }
 }
 
+exports.validatePostEdit = (data) => {
+    let errors = {}
+    if (isEmpty(data.name))
+        errors.name = 'Must not be empty';
+    if (isEmpty(data.body))
+        errors.body = 'Must not be empty';
+    if (isEmpty(data.price))
+        errors.price = 'Must not be empty';
+    
+    return {
+        errors,
+        valid: Object.keys(errors).length === 0 ? true : false
+    }
+}
+
 exports.reduceUserDetails = (data) => {
     let userDetails = {}
 
@@ -81,6 +96,8 @@ exports.reduceUserDetails = (data) => {
     }
     if(!isEmpty(data.location.trim()))
         userDetails.location = data.location;
+    if(!isEmpty(data.phone.trim()))
+        userDetails.phone = data.phone;
     
     return userDetails;
 }

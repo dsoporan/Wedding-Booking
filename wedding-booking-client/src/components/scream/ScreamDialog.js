@@ -23,7 +23,7 @@ import ChatIcon from '@material-ui/icons/Chat';
 
 //redux
 import {connect} from 'react-redux';
-import {getScream, clearErrors, getScreams} from '../../redux/actions/dataActions';
+import {getScream, clearErrors} from '../../redux/actions/dataActions';
 
 const styles = {
     invisibleSeparator: {
@@ -183,7 +183,6 @@ class ScreamDialog extends Component{
 ScreamDialog.propTypes = {
     clearErrors: PropTypes.func.isRequired,
     getScream: PropTypes.func.isRequired,
-    getScreams: PropTypes.func.isRequired,
     screamId: PropTypes.string.isRequired,
     username: PropTypes.string.isRequired,
     scream: PropTypes.object.isRequired,
@@ -198,7 +197,6 @@ const mapStateToProps = (state) => ({
 const mapActionsToProps = {
     getScream,
     clearErrors,
-    getScreams
 };
 
 export default connect(mapStateToProps, mapActionsToProps)(withStyles(styles)(ScreamDialog));

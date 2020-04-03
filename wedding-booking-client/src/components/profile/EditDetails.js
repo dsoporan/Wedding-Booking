@@ -27,6 +27,7 @@ export class EditDetails extends Component {
         bio: "",
         website: "",
         location: "",
+        phone: "",
         open: false
     }
 
@@ -35,6 +36,7 @@ export class EditDetails extends Component {
             bio: credentials.bio ? credentials.bio : '',
             website: credentials.website ? credentials.website : '',
             location: credentials.location ? credentials.location : '',
+            phone: credentials.phone ? credentials.phone : '',
         })
     }
 
@@ -52,7 +54,8 @@ export class EditDetails extends Component {
         const userDetails = {
             bio: this.state.bio,
             website: this.state.website,
-            location: this.state.location
+            location: this.state.location,
+            phone: this.state.phone,
         }
         this.props.editUserDetails(userDetails);
         this.handleClose();
@@ -87,6 +90,8 @@ export class EditDetails extends Component {
                             className={classes.website} value={this.state.website} onChange={this.handleChange} fullWidth/>
                             <TextField name="location" type="text" label="Location" placeholder="Where you live"
                             className={classes.location} value={this.state.location} onChange={this.handleChange} fullWidth/>
+                            <TextField name="phone" type="text" label="Phone" placeholder="What is your phone number"
+                            className={classes.phone} value={this.state.phone} onChange={this.handleChange} fullWidth/>
                        </form>
                    </DialogContent>
                    <DialogActions>

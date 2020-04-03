@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
 import dayjs from 'dayjs';
 import {Link} from 'react-router-dom';
+import Phone from '@material-ui/icons/Phone';
+import Email from '@material-ui/icons/Email';
 
 //MUI imports
 import MuiLink from '@material-ui/core/Link';
@@ -53,7 +55,9 @@ const StaticProfile = (props) => {
         imageUrl,
         bio,
         website,
-        location
+        location,
+        phone,
+        email
     }} = props
 
     return (
@@ -70,6 +74,12 @@ const StaticProfile = (props) => {
                         <hr/>
                         {bio && <Typography variant="body2">{bio}</Typography>}
                         <hr/>
+                        {phone && (<Fragment>
+                            <Phone color="primary"/>
+                            <span>{' '}{phone}</span>
+                            </Fragment>
+                            )}
+                        <hr/>
                         {location && (
                             <Fragment>
                                 <LocationOn color="primary"/> <span>{location}</span>
@@ -85,6 +95,12 @@ const StaticProfile = (props) => {
                                 <hr/>
                             </Fragment>
                         )}
+                        {email && (<Fragment>
+                            <Email color="primary"/>
+                            <span>{' '}{email}</span>
+                            </Fragment>
+                            )}
+                        <hr/>
                         <CalendarToday color="primary"/>{' '}
                         <span>Joined {dayjs(createdAt).format('MMM YYYY')}</span>
 

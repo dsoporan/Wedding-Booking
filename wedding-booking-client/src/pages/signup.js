@@ -5,6 +5,11 @@ import AppIcon from '../images/logo-mare.png';
 import {Link} from 'react-router-dom' ;
 
 //Mui imports
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+
 import Grid from '@material-ui/core/Grid';
 import CircularProgress from '@material-ui/core/CircularProgress';
 // import Typography from '@material-ui/core/Typography';
@@ -49,6 +54,7 @@ class signup extends Component {
             password: '',
             confirmPassword: '',
             username: '',
+            userType: 'Married To Be',
             errors: {} 
         }
     }
@@ -68,7 +74,8 @@ class signup extends Component {
            email: this.state.email,
            password: this.state.password,
            confirmPassword: this.state.confirmPassword,
-           username: this.state.username
+           username: this.state.username,
+           userType: this.state.userType,
        }
        this.props.signupUser(newUserData, this.props.history);
     }
@@ -96,6 +103,13 @@ class signup extends Component {
                             helperText={errors.confirmPassword} error={errors.confirmPassword ? true : false}  value={this.state.confirmPassword} onChange={this.handleChange} fullWidth/>
                         <TextField id='username' name='username' type='text' label='Username' className={classes.textField}
                             helperText={errors.username} error={errors.username ? true : false}  value={this.state.username} onChange={this.handleChange} fullWidth/>
+                        <FormControl className={classes.formControl} fullWidth>
+                            <InputLabel id="demo-simple-select-label">User Type</InputLabel>
+                            <Select name="userType" labelId="demo-simple-select-label" id="demo-simple-select" value={this.state.userType} onChange={this.handleChange}>
+                                <MenuItem value="Married To Be">Married To Be</MenuItem>
+                                <MenuItem value="Service Provider">Service Provider</MenuItem>
+                            </Select>
+                        </FormControl>
                         
                         {errors.general && (
                             <Typography variant='body2' className={classes.customError}>

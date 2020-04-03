@@ -16,6 +16,8 @@ import EditIcon from '@material-ui/icons/Edit';
 //Icons
 import LocationOn from '@material-ui/icons/LocationOn';
 import LinkIcon from '@material-ui/icons/Link';
+import Phone from '@material-ui/icons/Phone';
+import Email from '@material-ui/icons/Email';
 import CalendarToday from '@material-ui/icons/CalendarToday';
 import KeyboardReturn from '@material-ui/icons/KeyboardReturn';
 //Redux
@@ -107,7 +109,9 @@ export class Profile extends Component {
                     imageUrl, 
                     bio, 
                     website, 
-                    location
+                    location,
+                    phone,
+                    email
                 },
             loading,
             authenticated
@@ -131,6 +135,12 @@ export class Profile extends Component {
                         <hr/>
                         {bio && <Typography variant="body2">{bio}</Typography>}
                         <hr/>
+                        {phone && (<Fragment>
+                            <Phone color="primary"/>
+                            <span>{' '}{phone}</span>
+                            </Fragment>
+                            )}
+                        <hr/>
                         {location && (
                             <Fragment>
                                 <LocationOn color="primary"/> <span>{location}</span>
@@ -146,6 +156,12 @@ export class Profile extends Component {
                                 <hr/>
                             </Fragment>
                         )}
+                        {email && (<Fragment>
+                            <Email color="primary"/>
+                            <span>{' '}{email}</span>
+                            </Fragment>
+                            )}
+                        <hr/>
                         <CalendarToday color="primary"/>{' '}
                         <span>Joined {dayjs(createdAt).format('MMM YYYY')}</span>
 
