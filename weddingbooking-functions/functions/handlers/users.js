@@ -149,9 +149,11 @@ exports.getUserDetails = (req, res) => {
 //Get user details
 exports.getAuthenticatedUser = (req, res) => {
     let userData = {};
+    let userType;
     db.doc(`/users/${req.user.username}`).get()
     .then(doc => {
         if(doc.exists){
+            userType = doc.data().userType;
             userData.credentials = doc.data();
             return db.collection('likes').where('username', '==', req.user.username).get()
         }
@@ -177,6 +179,19 @@ exports.getAuthenticatedUser = (req, res) => {
                 read: doc.data().read,
                 notificationId: doc.id
             });
+        });
+        console.log(userType);
+        if (userType === 'Married To Be'){
+            return db.collection('bookings').where('username', '==', req.user.username).orderBy('date', 'asc').get();
+        }
+        else{
+            return db.collection('bookings').where('usernameProvider', '==', req.user.username).orderBy('date', 'asc').get();
+        }
+    })
+    .then(data => {
+        userData.bookings = []
+        data.forEach(doc => {
+            userData.bookings.push(doc.data());
         });
         return res.json(userData);
     })

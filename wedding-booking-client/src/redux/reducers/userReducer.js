@@ -1,11 +1,12 @@
-import {SET_AUTHENTICATED, SET_UNAUTHENTICATED, SET_USER, LOADING_USER, LIKE_SCREAM, UNLIKE_SCREAM, MARK_NOTIFICATIONS_READ} from '../types';
+import {SET_AUTHENTICATED, SET_UNAUTHENTICATED, SET_USER, LOADING_USER, LIKE_SCREAM, UNLIKE_SCREAM, MARK_NOTIFICATIONS_READ, SET_BOOKINGS, BOOK_SCREAM} from '../types';
 
 const initialState = {
     authenticated: false,
     loading: false,
     credentials: {},
     likes: [],
-    notifications: []
+    notifications: [],
+    bookings: []
 };
 
 export default function(state = initialState, action){
@@ -48,6 +49,18 @@ export default function(state = initialState, action){
             state.notifications.forEach(notification => notification.read = true);
             return {
                 ...state
+            }
+        case BOOK_SCREAM:
+            return{
+                ...state,
+                bookings: [
+                    action.payload,
+                    ...state.bookings]
+            }
+        case SET_BOOKINGS:
+            return{
+                ...state,
+                bookings: action.payload
             }
         default:
             return state;

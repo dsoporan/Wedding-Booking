@@ -322,3 +322,75 @@ exports.editScream = (req, res) => {
         res.status(500).json({error: "Something went wrong"});
     });
 };
+
+//book scream
+exports.bookScream = (req, res) => {
+
+    let transformDate = new Date(req.body.date);
+    transformDate.setHours(12,0,0,0);
+    transformDate = transformDate.toISOString();
+
+    const bookScream = {
+        username: req.body.username,
+        date: transformDate,
+        screamId: req.params.screamId,
+        createdAt: new Date().toISOString(),
+    };
+
+    db.doc(`/screams/${req.params.screamId}`).get()
+    .then(doc => {
+        if(!doc.exists){
+            return res.status(404).json({error: 'Post not found'});
+        }
+        bookScream.usernameProvider = doc.data().username;
+        db
+        .collection('bookings')
+        .add(bookScream)
+        .then((doc) => {
+            const resBooking = bookScream;
+            resBooking.bookingId = doc.id;
+            return resBooking;
+        })
+        .then((resBooking) => {
+            db.doc(`/screams/${req.params.screamId}`).get()
+            .then(doc => {
+                const busyDates = doc.data().busyDates;
+                busyDates.push(transformDate);
+                resBooking.date = transformDate;
+                res.json(resBooking);
+                return doc.ref.update({busyDates: busyDates});
+            })
+        })
+        .catch((err) => {
+            res.status(500).json({error: 'something went wrong'});
+            console.error(err);
+        });
+
+    })
+    .catch((err) => {
+        res.status(500).json({error: 'something went wrong'});
+        console.error(err);
+    });
+};
+
+//Get all bookings
+exports.getAllBookings = (req, res) => {
+    db
+    .collection('bookings')
+    .orderBy('createdAt', 'desc')
+    .get()
+    .then(data => {
+        let bookings = [];
+        data.forEach(doc => {
+            bookings.push({
+                bookingId: doc.id,
+                username: doc.data().username,
+                date: doc.data().date,
+                screamId: doc.data().screamId,
+                createdAt: doc.data().createdAt
+            });
+        });
+        return res.json(bookings);
+    })
+    .catch(err => console.error(err));
+}

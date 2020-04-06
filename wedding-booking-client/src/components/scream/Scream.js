@@ -21,6 +21,7 @@ import ChatIcon from '@material-ui/icons/Chat';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
+import BookScream from './BookScream';
 
 const styles = {
     card: {
@@ -47,8 +48,7 @@ class Scream extends Component {
         let isBusy = false;
         busyDates.forEach((dateB) => {
             let onlyDateB = dateB.split('T');
-            console.log(onlyDate);
-            console.log(onlyDateB[0]);
+
             if (onlyDate === onlyDateB[0]){
                 isBusy = true;
             }
@@ -88,6 +88,7 @@ class Scream extends Component {
                     <ChatIcon color="primary"/>
                 </MyButton>
                 <span>{commentCount} Comments</span>
+                {credentials.userType === 'Married To Be' ? (<BookScream screamId={screamId} date={dateTag && dateTag.toString()} price={price}/>) : null}
                 <ScreamDialog screamId={screamId} username={username} openDialog={this.props.openDialog}/>
             </CardContent>
         </Card>) : null

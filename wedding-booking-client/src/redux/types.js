@@ -21,4 +21,6 @@ export const DELETE_SCREAM = "DELETE_SCREAM";
 export const POST_SCREAM = "POST_SCREAM";
 export const SUBMIT_COMMENT = "SUBMIT_COMMENT";
 export const EDIT_SCREAM = "EDIT_SCREAM";
+export const BOOK_SCREAM = "BOOK_SCREAM";
+export const SET_BOOKINGS = "SET_BOOKINGS";
 

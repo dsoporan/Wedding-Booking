@@ -68,7 +68,7 @@ class Notifications extends Component {
 
         let notificationsMarkup = notifications && notifications.length > 0 ? (
             notifications.map(notif => {
-                const verb = notif.type === 'like' ? 'liked' : 'commened on';
+                const verb = notif.type === 'like' ? 'liked' : notif.type === 'comment' ? 'commened on' : 'booked';
                 const time = dayjs(notif.createdAt).fromNow();
                 const  iconColor = notif.read ? 'primary' : 'secondary';
                 const icon = notif.type === 'like' ? (
@@ -81,7 +81,7 @@ class Notifications extends Component {
                     <MenuItem key={notif.createdAt} onClick={this.handleClose}>
                         {icon}
                         <Typography component={Link} color="initial" variant="body1" to={`/users/${notif.recipient}/scream/${notif.screamId}`}>
-                            {notif.sender} {verb} your posts {time}
+                            {notif.sender} {verb} your post {time}
                         </Typography>
                     </MenuItem>
                 )

@@ -122,7 +122,6 @@ class PostScream extends Component{
         } else {
           busyDates.push(day);
         }
-        console.log(busyDates);
         this.setState({ busyDates });
       }
     onDrop = (picture) => {

@@ -82,10 +82,6 @@ class EditScream extends Component {
 
     handleSubmit = (event) => {
         event.preventDefault();
-        console.log(this.state.name);
-        console.log(this.state.body);
-        console.log(this.state.price);
-        console.log(this.state.busyDates);
         this.props.editScream(this.props.screamId, {
             name: this.state.name,
             body: this.state.body,
@@ -122,7 +118,6 @@ class EditScream extends Component {
           const selectedIndex = busyDates.findIndex(selectedDay =>
             Date.parse(selectedDay) === Date.parse(day)
           );
-          console.log(selectedIndex);
           busyDates.splice(selectedIndex, 1);
         } else {
           busyDates.push(day);

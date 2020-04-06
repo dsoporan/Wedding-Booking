@@ -1,5 +1,5 @@
 import {SET_SCREAMS, LOADING_DATA, LIKE_SCREAM, UNLIKE_SCREAM, DELETE_SCREAM,
-     LOADING_UI, POST_SCREAM, CLEAR_ERRORS, SET_ERRORS,STOP_LOADING_UI, SET_SCREAM, SUBMIT_COMMENT, EDIT_SCREAM} from '../types';
+     LOADING_UI, POST_SCREAM, CLEAR_ERRORS, SET_ERRORS,STOP_LOADING_UI, SET_SCREAM, SUBMIT_COMMENT, EDIT_SCREAM, BOOK_SCREAM} from '../types';
 import axios from 'axios';
 
 //Get all screams
@@ -48,14 +48,11 @@ export const postScream = (newScream, photos) => (dispatch) => {
         return res.data;
     })
     .then((res) => {
-        console.log(res);
-        console.log(photos);
         if (photos[0].length > 0){
             const formData = new FormData();
             photos[0].forEach((photo, index) => {
                 formData.append('image' + index, photo, photo.name);
             })
-            console.log(formData);
             dispatch(uploadMultipleImages(res.screamId, formData));
         }
     })
@@ -68,7 +65,6 @@ export const postScream = (newScream, photos) => (dispatch) => {
 }
 
 export const uploadMultipleImages = (screamId, formData) => (dispatch) => {
-    console.log(screamId)
     axios.post(`/scream/${screamId}/photos`, formData)
     .then(() => {
         dispatch(getScream(screamId));
@@ -134,6 +130,24 @@ export const editScream = (screamId, screamEdit) => (dispatch) => {
             type: EDIT_SCREAM,
             payload: res.data
         })
+        dispatch(clearErrors());
+    })
+    .catch(err => {
+        dispatch({
+            type: SET_ERRORS,
+            payload: err.response.data
+        })
+    })
+} 
+
+export const bookScream = (screamId, booking) => (dispatch) => {
+    axios.post(`/scream/${screamId}/book`, booking)
+    .then(res => {
+        dispatch({
+            type: BOOK_SCREAM,
+            payload: res.data
+        })
+        dispatch(getScreams());
         dispatch(clearErrors());
     })
     .catch(err => {

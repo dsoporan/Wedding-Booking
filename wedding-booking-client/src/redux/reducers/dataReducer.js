@@ -1,4 +1,4 @@
-import {SET_SCREAMS, LIKE_SCREAM, UNLIKE_SCREAM, LOADING_DATA, DELETE_SCREAM, POST_SCREAM, SET_SCREAM, SUBMIT_COMMENT, EDIT_SCREAM} from '../types';
+import {SET_SCREAMS, LIKE_SCREAM, UNLIKE_SCREAM, LOADING_DATA, DELETE_SCREAM, POST_SCREAM, SET_SCREAM, SUBMIT_COMMENT, EDIT_SCREAM, BOOK_SCREAM} from '../types';
 
 const initialState = {
     screams: [],
@@ -54,6 +54,18 @@ export default function(state = initialState, action){
             return {
                 ...state
             }
+        case BOOK_SCREAM:
+            let indexBook = state.screams.findIndex((scream) => scream.screamId === action.payload.screamId);
+            state.screams[indexBook].busyDates.push(action.payload.date);
+            return {
+                ...state
+            }
+        // case SET_BOOKINGS:
+        //     return{
+        //         ...state,
+        //         bookings: action.payload,
+        //         loading: false
+        //     }
         case POST_SCREAM:
             return {
                 ...state,

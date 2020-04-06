@@ -1,4 +1,4 @@
-import {SET_USER, SET_ERRORS, CLEAR_ERRORS, LOADING_UI, SET_UNAUTHENTICATED, LOADING_USER, MARK_NOTIFICATIONS_READ} from '../types';
+import {SET_USER, SET_ERRORS, CLEAR_ERRORS, LOADING_UI, SET_UNAUTHENTICATED, LOADING_USER, MARK_NOTIFICATIONS_READ, SET_BOOKINGS} from '../types';
 import axios from 'axios';
 
 export const loginUser = (userData, history) => (dispatch) => {
@@ -85,4 +85,22 @@ export const markNotificationsRead = (notificationIds) => (dispatch) => {
         })
     })
     .catch(err => console.log(err));
+}
+
+
+//Get all bookings
+export const getBookings = (username) => (dispatch) => {
+    axios.get(`/bookings/${username}`)
+    .then(res => {
+        dispatch({
+            type: SET_BOOKINGS,
+            payload: res.data
+        })
+    })
+    .catch(err =>{
+        dispatch({
+            type: SET_BOOKINGS,
+            payload: []
+        })
+    })
 }

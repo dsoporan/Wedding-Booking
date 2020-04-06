@@ -25,13 +25,11 @@ class user extends Component {
             this.setState({screamIdParam: screamId});
 
         this.props.getUserData(username);
-        console.log(username);
         axios.get(`/user/${username}`)
         .then(res => {
             this.setState({
                 profile: res.data.user
             })
-            console.log(res.data);
         })
         .catch(err => console.log(err));
     }

@@ -6,7 +6,7 @@ const FBAuth = require('./utils/fbAuth');
 const cors = require('cors');
 app.use(cors());
 
-const {getAllScreams, postOneScream, getScream, commentOnScream, likeScream, unlikeScream, deleteScream, uploadPostPhotos, editScream} = require('./handlers/screams')
+const {getAllScreams, postOneScream, getScream, commentOnScream, likeScream, unlikeScream, deleteScream, uploadPostPhotos, editScream, bookScream, getAllBookings} = require('./handlers/screams')
 const {signup, login, uploadImage, addUserDetails, getAuthenticatedUser, getUserDetails, markNotificationsRead} = require('./handlers/users');
 const {db} = require('./utils/admin');
 
@@ -21,6 +21,8 @@ app.get('/scream/:screamId/like', FBAuth, likeScream);
 app.post('/scream/:screamId/comment', FBAuth, commentOnScream);
 app.post('/scream/:screamId/photos', FBAuth, uploadPostPhotos);
 app.post('/scream/:screamId/edit', FBAuth, editScream);
+app.post('/scream/:screamId/book', FBAuth, bookScream);
+app.get('/bookings/:username', FBAuth, getAllBookings);
 
 // Users Routes
 app.post('/signup', signup);
@@ -80,6 +82,26 @@ exports.createNotificationOnComment = functions.region('europe-west1').firestore
     .catch(err => {
         console.error(err);
         return;
+    })
+});
+
+exports.createNotificationOnBooking = functions.region('europe-west1').firestore.document('bookings/{id}')
+.onCreate((snapshot) => {
+    return db.doc(`/screams/${snapshot.data().screamId}`).get()
+    .then(doc => {
+        if(doc.exists && doc.data().username !== snapshot.data().username){
+            return db.doc(`/notifications/${snapshot.id}`).set({
+                createdAt: new Date().toISOString(),
+                recipient: doc.data().username,
+                sender: snapshot.data().username,
+                type: 'booking',
+                read: false,
+                screamId: doc.id
+            });
+        }
+    })
+    .catch(err => {
+        console.error(err);
     })
 });
 
