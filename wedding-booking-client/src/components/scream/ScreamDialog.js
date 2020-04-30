@@ -23,7 +23,7 @@ import ChatIcon from '@material-ui/icons/Chat';
 
 //redux
 import {connect} from 'react-redux';
-import {getScream, clearErrors} from '../../redux/actions/dataActions';
+import {getScream, clearErrors, getScreams, getUserData} from '../../redux/actions/dataActions';
 
 const styles = {
     invisibleSeparator: {
@@ -67,6 +67,9 @@ const styles = {
         height: 300,
         objectFit: 'cover'
     },
+    bodyText:{
+        textAlign: 'justify'
+    }
 }
 
 class ScreamDialog extends Component{
@@ -91,7 +94,6 @@ class ScreamDialog extends Component{
         if(oldPath === newPath){
             oldPath = `/users/${username}`;
         }
-
         window.history.pushState(null, null, newPath);
 
         this.setState({open:true, oldPath, newPath});
@@ -99,8 +101,10 @@ class ScreamDialog extends Component{
     }
 
     handleClose = () => {
+        this.setState({open:false});   
         window.history.pushState(null, null, this.state.oldPath);
-        this.setState({open:false});
+        if (this.state.oldPath === '/')
+            this.props.getScreams();
         this.props.clearErrors();
     }
 
@@ -135,7 +139,7 @@ class ScreamDialog extends Component{
                         {dayjs(createdAt).format('h:mm a, MMMM DD YYYY')}
                     </Typography>
                     <hr className={classes.invisibleSeparator}/>
-                    <Typography variant="body1">
+                    <Typography className={classes.bodyText} variant="body1">
                         {body}
                     </Typography>
                     <Typography variant="body1">Category: {category}</Typography>
@@ -183,6 +187,8 @@ class ScreamDialog extends Component{
 ScreamDialog.propTypes = {
     clearErrors: PropTypes.func.isRequired,
     getScream: PropTypes.func.isRequired,
+    getScreams: PropTypes.func.isRequired,
+    getUserData: PropTypes.func.isRequired,
     screamId: PropTypes.string.isRequired,
     username: PropTypes.string.isRequired,
     scream: PropTypes.object.isRequired,
@@ -195,8 +201,10 @@ const mapStateToProps = (state) => ({
 });
 
 const mapActionsToProps = {
+    getScreams,
     getScream,
     clearErrors,
+    getUserData,
 };
 
 export default connect(mapStateToProps, mapActionsToProps)(withStyles(styles)(ScreamDialog));

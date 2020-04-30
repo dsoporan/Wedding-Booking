@@ -156,6 +156,7 @@ class PostScream extends Component{
                                 <Select name="category" value={this.state.category} onChange={this.handleChange}>
                                     <MenuItem value={'EventHall'}>Location / EventHall</MenuItem>
                                     <MenuItem value={'Music'}>Music</MenuItem>
+                                    <MenuItem value={'Photo & Video'}>Photo & Video</MenuItem>
                                     <MenuItem value={'Entertainment'}>Entertainment</MenuItem>
                                     <MenuItem value={'Others'}>Others</MenuItem>
                                 </Select>

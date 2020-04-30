@@ -60,11 +60,11 @@ class EditScream extends Component {
         errors: {}
     };
 
-    componentDidMount(){
-        if(this.props.openDialog){
-            this.handleOpen();
-        }
-    }
+    // componentDidMount(){
+    //     if(this.props.openDialog){
+    //         this.handleOpen();
+    //     }
+    // }
 
     componentWillReceiveProps(){
         const {scream : {name, body, price, busyDates}} = this.props;

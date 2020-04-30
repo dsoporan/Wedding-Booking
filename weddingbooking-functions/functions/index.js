@@ -6,11 +6,11 @@ const FBAuth = require('./utils/fbAuth');
 const cors = require('cors');
 app.use(cors());
 
-const {getAllScreams, postOneScream, getScream, commentOnScream, likeScream, unlikeScream, deleteScream, uploadPostPhotos, editScream, bookScream, getAllBookings} = require('./handlers/screams')
+const {getAllScreams, postOneScream, getScream, commentOnScream, likeScream, unlikeScream, deleteScream, uploadPostPhotos, editScream, bookScream, getAllBookings, suggestScreams, suggestPackage} = require('./handlers/screams')
 const {signup, login, uploadImage, addUserDetails, getAuthenticatedUser, getUserDetails, markNotificationsRead} = require('./handlers/users');
 const {db} = require('./utils/admin');
 
-// Scream Routes
+// Post Routes
 app.get('/screams', getAllScreams);
 app.post('/scream', FBAuth, postOneScream);
 app.get('/scream/:screamId', getScream);
@@ -23,6 +23,8 @@ app.post('/scream/:screamId/photos', FBAuth, uploadPostPhotos);
 app.post('/scream/:screamId/edit', FBAuth, editScream);
 app.post('/scream/:screamId/book', FBAuth, bookScream);
 app.get('/bookings/:username', FBAuth, getAllBookings);
+app.post('/screams/suggest', FBAuth, suggestScreams);
+app.post('/screams/suggestPackage', FBAuth, suggestPackage);
 
 // Users Routes
 app.post('/signup', signup);

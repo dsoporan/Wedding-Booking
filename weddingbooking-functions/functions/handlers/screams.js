@@ -394,3 +394,346 @@ exports.getAllBookings = (req, res) => {
     })
     .catch(err => console.error(err));
 }
+
+function compare( a, b ) {
+    if ( a.price < b.price ){
+      return -1;
+    }
+    if ( a.price > b.price ){
+      return 1;
+    }
+    return 0;
+}
+
+countBookings = (bookings, screamId) => {
+    let count = 0;
+    bookings.forEach(booking => {
+        if (booking.screamId === screamId)
+            count += 1;
+    })
+    return count;
+}
+
+suggestAlgo = (screams, bookings) => {
+    
+    let winnerScream = {};
+    let allCoeff = -1;
+
+    screams.forEach(scream => {
+        let coefficient = 0;
+        coefficient += scream.likeCount * 0.25;
+        coefficient += scream.commentCount * 0.25;
+        coefficient += countBookings(bookings, scream.screamId) * 0.5;
+        if (coefficient > allCoeff){
+            allCoeff = coefficient;
+            winnerScream = scream;
+        }
+        if (coefficient === allCoeff){
+            if(parseInt(scream.price) < parseInt(winnerScream.price)){
+                winnerScream = scream;
+            }
+        }
+    })
+    return winnerScream;
+    
+}
+
+//suggest scream algorithm
+exports.suggestScreams = (req, res) => {
+
+    const date = req.body.date.split('T');
+
+    let categories = [];
+    if (req.body.location) categories.push('EventHall');
+    if (req.body.music) categories.push('Music');
+    if (req.body.photo) categories.push('Photo & Video');
+    if (req.body.entertainment) categories.push('Entertainment');
+    if (req.body.others) categories.push('Others');
+
+    if(req.body.price === ''){
+        req.body.price = Number.MAX_SAFE_INTEGER;
+    }
+
+    db
+    .collection('screams')
+    .get()
+    .then(data => {
+        let screams = {};
+        categories.forEach(ctg => {
+            screams[ctg] = [];
+        })
+        data.forEach(doc => {
+            let good = true;
+            doc.data().busyDates.forEach(busyDate => {
+                let bDate = busyDate.split('T');
+                if (date[0] === bDate[0])
+                    good = false;
+            })
+            if (parseInt(req.body.price) < parseInt(doc.data().price))
+                good = false;
+            
+            if (!categories.includes(doc.data().category))
+                good = false;
+
+            if (good){
+                let scream = doc.data();
+                scream.screamId = doc.id;
+                screams[doc.data().category].push(scream);
+            }
+        });
+        return screams;
+    })
+    .then(screams => { 
+        let bookings = [];
+        db
+        .collection('bookings')
+        .get()
+        .then(data => {
+            data.forEach(doc => {
+                bookings.push(doc.data());
+            });
+            return bookings;
+        })
+        .then(bookings => {
+            let goodScreams = [];
+            console.log(categories);
+            console.log(screams);
+            categories.forEach(category => {
+                screams[category].sort(compare);
+                if (req.body.suggestionType === 'low'){
+                    goodScreams.push(screams[category][0]);
+                }
+                else if (req.body.suggestionType === 'high'){
+                    goodScreams.push(screams[category][screams[category].length - 1]);
+                }
+                else{
+                    let scream = suggestAlgo(screams[category], bookings);
+                    if (Object.keys(scream).length != 0)
+                        goodScreams.push(scream);
+                }
+            })
+            return res.json(goodScreams);
+        })
+        .catch(err => {
+            res.status(500).json({error: 'something went wrong'});
+            console.error(err)}
+        );
+    })
+    .catch(err => {
+        res.status(500).json({error: 'something went wrong'});
+        console.error(err)}
+    );
+   
+};
+
+function cartesian(arg) {
+    var r = [], max = arg.length - 1;
+    function helper(arr, i) {
+        for (var j = 0, l = arg[i].length; j < l; j++) {
+            var a = arr.slice(0); // clone arr
+            a.push(arg[i][j])
+            if (i == max) {
+                r.push(a);
+            } else
+                helper(a, i+1);
+        }
+    }
+    helper([], 0);
+    return r;
+};
+
+checkIfInPrice = (screamArray, total) => {
+    cost = 0;
+    screamArray.forEach(scream => {
+        cost += parseInt(scream.price);
+    })
+    return (cost <= total);
+}  
+
+calculateCost = (screamArray) => {
+    costArray = []
+    screamArray.forEach(combination => {
+        cost = 0;
+        combination.forEach(scream => {
+            cost += parseInt(scream.price);
+        })
+        costArray.push(cost);
+    })
+    return costArray;
+}
+
+checkCombinationsUnique = (comb1, comb2) => {
+    unique = true;
+    for(post = 0; post < comb1.length; post++){
+        if (comb1[post] === comb2[post]){
+            unique = false;
+            break;
+        }
+    }
+    return unique;
+}
+
+
+calculate2Min = (costArray, combinations) => {
+    var clone = costArray.slice(0); // clone arr
+    min1 = Math.min(...clone);
+    const index = clone.indexOf(min1);
+    clone.splice(index, 1);
+    let ok = true;
+    let index2 = -1;
+    while(ok){
+        min2 = Math.min(...clone);
+        index2 = costArray.indexOf(min2);
+        if (index2 === -1){
+            ok = false;
+            break;
+        }
+        if(checkCombinationsUnique(combinations[index], combinations[index2]))
+            ok = false;
+        const indexClone = clone.indexOf(min2);
+        clone.splice(indexClone, 1);
+    }
+    return [index, index2];
+}
+
+calculate2Max = (costArray, combinations) => {
+    var clone = costArray.slice(0); // clone arr
+    max1 = Math.max(...clone);
+    const index = clone.indexOf(max1);
+    clone.splice(index, 1);
+    let ok = true;
+    let index2 = -1;
+    while(ok){
+        max2 = Math.max(...clone);
+        index2 = costArray.indexOf(max2);
+        if (index2 === -1){
+            ok = false;
+            break;
+        }
+        if(checkCombinationsUnique(combinations[index], combinations[index2]))
+            ok = false;
+        const indexClone = clone.indexOf(max2);
+        clone.splice(indexClone, 1);
+    }
+    return [index, index2];
+}
+
+calculateCoeff = (combinations, bookings) => {
+    allCoeff = [];
+    combinations.forEach(combination => {
+        coeffCombination = 0;
+        combination.forEach(scream => {
+            coeffCombination += scream.likeCount * 0.25;
+            coeffCombination += scream.commentCount * 0.25;
+            coeffCombination += countBookings(bookings, scream.screamId) * 0.5;
+        })
+        allCoeff.push(coeffCombination)
+    })
+    return allCoeff;
+}
+
+
+//suggest scream algorithm
+exports.suggestPackage = (req, res) => {
+
+    const date = req.body.date.split('T');
+    let categories = [];
+    if (req.body.location) categories.push('EventHall');
+    if (req.body.music) categories.push('Music');
+    if (req.body.photo) categories.push('Photo & Video');
+    if (req.body.entertainment) categories.push('Entertainment');
+    if (req.body.others) categories.push('Others');
+    
+    if(req.body.price === ''){
+        req.body.price = Number.MAX_SAFE_INTEGER;
+    }
+
+    db
+    .collection('screams')
+    .get()
+    .then(data => {
+        let screams = {};
+        categories.forEach(ctg => {
+            screams[ctg] = [];
+        })
+        data.forEach(doc => {
+            let good = true;
+            doc.data().busyDates.forEach(busyDate => {
+                let bDate = busyDate.split('T');
+                if (date[0] === bDate[0])
+                    good = false;
+            })
+            if (parseInt(req.body.price) < parseInt(doc.data().price))
+                good = false;
+            
+            if (!categories.includes(doc.data().category))
+                good = false;
+
+            if (good){
+                let scream = doc.data();
+                scream.screamId = doc.id;
+                screams[doc.data().category].push(scream);
+            }
+        });
+        return screams;
+    })
+    .then(screams => { 
+        let screamArray = [];
+        categories.forEach(category => {
+            screamArray.push(screams[category]);
+        })
+        let allCombinations = cartesian(screamArray);
+        let inPriceCombinations = [];
+        allCombinations.forEach(combination => {
+            if(checkIfInPrice(combination, parseInt(req.body.price)))
+                inPriceCombinations.push(combination);
+        })
+        if (inPriceCombinations.length >= 1)
+            return inPriceCombinations;
+        else
+            return res.status(500).json({error: 'Try to improve searching!'});
+    })
+    .then(inPriceCombinations => {
+        let costs = calculateCost(inPriceCombinations);
+        goodScreams = [];
+        if (req.body.suggestionType === 'low'){
+            [index1, index2] = calculate2Min(costs, inPriceCombinations);
+            goodScreams.push(inPriceCombinations[index1]);
+            if (index2 !== -1)
+                goodScreams.push(inPriceCombinations[index2]);
+            return res.json(goodScreams);
+        }
+        else if (req.body.suggestionType === 'high'){
+            [index1, index2] = calculate2Max(costs, inPriceCombinations);
+            goodScreams.push(inPriceCombinations[index1]);
+            if (index2 !== -1)
+                goodScreams.push(inPriceCombinations[index2]);
+            return res.json(goodScreams);
+        }
+        else {
+            db
+            .collection('bookings')
+            .get()
+            .then(data => {
+                let bookings = [];
+                data.forEach(doc => {
+                    bookings.push(doc.data());
+                });
+                return bookings;
+            })
+            .then(bookings => {
+                coeff = calculateCoeff(inPriceCombinations, bookings);
+                [index1, index2] = calculate2Max(coeff, inPriceCombinations);
+                goodScreams.push(inPriceCombinations[index1]);
+                if (index2 !== -1)
+                    goodScreams.push(inPriceCombinations[index2]);
+                return res.json(goodScreams);
+            })
+        }
+    })
+    .catch(err => {
+        res.status(500).json({error: 'No package found'});
+        //console.error(err)
+	});
+   
+};

@@ -4,6 +4,7 @@ import Scream from '../components/scream/Scream';
 import Profile from '../components/profile/Profile';
 import PropTypes from 'prop-types';
 import ScreamSkeleton from '../util/ScreamSkeleton';
+import SuggestScreamDialog from '../components/scream/SuggestScreamDialog';
 
 //MUI stuff
 import InputLabel from '@material-ui/core/InputLabel';
@@ -40,6 +41,7 @@ class home extends Component {
     componentDidMount(){
         this.props.getScreams();
     }
+    
     render() {
         const {screams, loading} = this.props.data;
         let recentScreamsMarkup = !loading ? (screams.length !== 0 ? (
@@ -70,10 +72,14 @@ class home extends Component {
                         <option value="All">All</option>
                         <option value="EventHall">Location / EventHall</option>
                         <option value="Music">Music</option>
+                        <option value="Photo & Video">Photo & Video</option>
                         <option value="Entertainment">Entertainment</option>
                         <option value="Others">Others</option>
                         </Select>
                     </FormControl>
+                    </Grid>
+                    <Grid item xs={3}>
+                        <SuggestScreamDialog/>
                     </Grid>
                 </Grid>
                 <Grid container spacing={4}>

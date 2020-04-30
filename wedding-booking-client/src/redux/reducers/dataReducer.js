@@ -1,8 +1,9 @@
-import {SET_SCREAMS, LIKE_SCREAM, UNLIKE_SCREAM, LOADING_DATA, DELETE_SCREAM, POST_SCREAM, SET_SCREAM, SUBMIT_COMMENT, EDIT_SCREAM, BOOK_SCREAM} from '../types';
+import {SET_PACKAGE, SET_SCREAMS, LIKE_SCREAM, UNLIKE_SCREAM, LOADING_DATA, DELETE_SCREAM, POST_SCREAM, SET_SCREAM, SUBMIT_COMMENT, EDIT_SCREAM, BOOK_SCREAM} from '../types';
 
 const initialState = {
     screams: [],
     scream: {},
+    package: [],
     loading: false
 }
 
@@ -60,12 +61,6 @@ export default function(state = initialState, action){
             return {
                 ...state
             }
-        // case SET_BOOKINGS:
-        //     return{
-        //         ...state,
-        //         bookings: action.payload,
-        //         loading: false
-        //     }
         case POST_SCREAM:
             return {
                 ...state,
@@ -80,6 +75,7 @@ export default function(state = initialState, action){
             state.scream.commentCount = action.payload.commentCount;
             return {
                 ...state,
+                screams: state.screams,
                 scream: {
                     ...state.scream,
                     comments: [
@@ -87,6 +83,12 @@ export default function(state = initialState, action){
                         ...state.scream.comments
                     ]
                 }
+            }
+        case SET_PACKAGE:
+            return {
+                ...state,
+                package: action.payload,
+                loading: false
             }
         default:
             return state;

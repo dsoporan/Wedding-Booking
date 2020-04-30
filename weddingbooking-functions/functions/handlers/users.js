@@ -169,7 +169,6 @@ exports.getAuthenticatedUser = (req, res) => {
     .then(data => {
         userData.notifications = [];
         data.forEach(doc => {
-            console.log(doc.id);
             userData.notifications.push({
                 recipient: doc.data().recipient,
                 sender: doc.data().sender,
@@ -180,7 +179,6 @@ exports.getAuthenticatedUser = (req, res) => {
                 notificationId: doc.id
             });
         });
-        console.log(userType);
         if (userType === 'Married To Be'){
             return db.collection('bookings').where('username', '==', req.user.username).orderBy('date', 'asc').get();
         }

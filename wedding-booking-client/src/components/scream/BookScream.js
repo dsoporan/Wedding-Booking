@@ -16,6 +16,7 @@ import {bookScream} from '../../redux/actions/dataActions';
 const styles = {
     bookButton: {
         marginLeft: 20,
+        minWidth: 92,
     },
 }
 

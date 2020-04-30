@@ -23,4 +23,5 @@ export const SUBMIT_COMMENT = "SUBMIT_COMMENT";
 export const EDIT_SCREAM = "EDIT_SCREAM";
 export const BOOK_SCREAM = "BOOK_SCREAM";
 export const SET_BOOKINGS = "SET_BOOKINGS";
+export const SET_PACKAGE = "SET_PACKAGE";
 

@@ -20,6 +20,7 @@ import login from './pages/login'
 import signup from './pages/signup'
 import Navbar from './components/layout/Navbar';
 import user from './pages/user';
+import suggestPackage from './pages/suggestPackage';
 import axios from 'axios';
 
 const theme = createMuiTheme({
@@ -71,6 +72,7 @@ class App extends Component {
               <AuthRoute exact path='/signup' component={signup}/>
               <Route exact path='/users/:username' component={user}/>
               <Route exact path='/users/:username/scream/:screamId' component={user}/> 
+              <Route exact path='/suggestPackage' component={suggestPackage}/>
             </Switch>
           </div>
         </Router>

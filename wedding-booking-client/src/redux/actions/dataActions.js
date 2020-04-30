@@ -1,4 +1,4 @@
-import {SET_SCREAMS, LOADING_DATA, LIKE_SCREAM, UNLIKE_SCREAM, DELETE_SCREAM,
+import {SET_PACKAGE, SET_SCREAMS, LOADING_DATA, LIKE_SCREAM, UNLIKE_SCREAM, DELETE_SCREAM,
      LOADING_UI, POST_SCREAM, CLEAR_ERRORS, SET_ERRORS,STOP_LOADING_UI, SET_SCREAM, SUBMIT_COMMENT, EDIT_SCREAM, BOOK_SCREAM} from '../types';
 import axios from 'axios';
 
@@ -182,6 +182,28 @@ export const getUserData = (username) => (dispatch) => {
         dispatch({
             type: SET_SCREAMS,
             payload: null
+        })
+    })
+}
+
+export const suggestPackageScreams = (criterias) => (dispatch) => {
+    dispatch({type: LOADING_UI});
+    axios.post(`/screams/suggestPackage`, criterias)
+    .then(res => {
+        dispatch({
+            type: SET_PACKAGE,
+            payload: res.data
+        })
+        dispatch(clearErrors());
+    })
+    .catch(err => {
+        dispatch({
+            type: SET_ERRORS,
+            payload: err.response.data
+        })
+        dispatch({
+            type: SET_PACKAGE,
+            payload: []
         })
     })
 }

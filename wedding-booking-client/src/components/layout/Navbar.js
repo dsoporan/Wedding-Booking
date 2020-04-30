@@ -16,6 +16,7 @@ import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck';
 
 //Icons
 import HomeIcon from '@material-ui/icons/Home';
+import EmojiObjectsIcon from '@material-ui/icons/EmojiObjects';
 
 export class Navbar extends Component {
   render() {
@@ -39,7 +40,14 @@ export class Navbar extends Component {
                     <HomeIcon/>
                 </MyButton>
                 </Link>
-                <Notifications/>
+                {userType && userType === 'Married To Be' ? (
+                  <Link to="/suggestPackage">
+                  <MyButton tip="Find a Package">
+                      <EmojiObjectsIcon/>
+                  </MyButton>
+                  </Link>
+                ) : null}
+                {userType && userType === 'Service Provider' ? (<Notifications/>) : null}
               </Fragment>
           ) : (
             <Fragment>

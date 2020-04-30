@@ -60,7 +60,7 @@ class Scream extends Component {
         dayjs.extend(relativeTime);
         const {classes, dateTag, priceTag, categoryTag, scream : {name, price, category, busyDates, body, createdAt, userImage, username, screamId, likeCount, commentCount},
         user: {authenticated, credentials}} = this.props;
-        let priceTagNo  = parseInt(priceTag, 10);
+        let priceTagNo = parseInt(priceTag, 10);
         let priceNo = parseInt(price, 10);
         
         const deleteButton = authenticated && username === credentials.username ? (
