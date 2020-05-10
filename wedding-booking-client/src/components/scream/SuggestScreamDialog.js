@@ -44,8 +44,15 @@ import {connect} from 'react-redux';
 // import {bookScream} from '../../redux/actions/dataActions';
 
 const styles = {
+    spinnerDiv: {
+        textAlign: 'center',
+        marginTop: 50,
+        marginBottom: 50,
+        minHeight: 200,
+    },
     progress: {
-        position: "absolute",
+        position: 'absolute',
+        left: '40%',
     },
     suggestButton: {
         marginTop: '5px',
@@ -88,7 +95,7 @@ class SuggestScreamDialog extends Component {
         open: false,
         date: new Date(),
         price: '',
-        location: false,
+        location: true,
         music: false,
         photo: false,
         entertainment: false,
@@ -173,26 +180,23 @@ class SuggestScreamDialog extends Component {
         }
         axios.post(`/screams/suggest`, criterias)
         .then(res => {
-            this.setState({screams: res.data});
+            if (res.data[0] !== null)
+                this.setState({screams: res.data});
+            
+            this.setState({loading: false});
         })
         .catch(err => {
             console.error(err);
         })
-        this.setState({loading: false});
     }
 
     render() {
 
-        const {classes, UI: {loading}, user: {credentials}} = this.props;
-        const error = [this.state.location, this.state.music, this.state.photo, this.state.entertainment, this.state.others].filter((v) => v).length < 1;
-        const buttonSubmit = error ? (<Button variant="contained" disabled className={classes.submitButton}>
-        Show me
-      </Button>) : (<Button variant="contained" color="primary" onClick={this.handleSubmit} className={classes.submitButton} disabled={this.state.loading}>
+        const {classes, user: {credentials}} = this.props;
+        const {loading} = this.state;
+        const buttonSubmit = (<Button variant="contained" color="primary" onClick={this.handleSubmit} className={classes.submitButton} disabled={this.state.loading}>
             Show me
-            {this.state.loading && (
-                <CircularProgress size={30} className={classes.progress}/>
-            )} 
-        </Button>);
+            </Button>);
         const screamMarkup = this.state.screams.length > 0 ?(this.state.screams.map(scream => (
             <Card key={scream.screamId} className={classes.card}>
                 <CardMedia image={scream.userImage} title="Profile Picture" className={classes.image}/>
@@ -215,7 +219,7 @@ class SuggestScreamDialog extends Component {
 
         const dialogMarkup = loading ? (
             <div className={classes.spinnerDiv}>
-               <CircularProgress size={150} thickness={2}/>
+               <CircularProgress size={150} thickness={2} className={classes.progress}/>
             </div>
         ) : (
             <Grid container spacing={2}>
@@ -240,7 +244,7 @@ class SuggestScreamDialog extends Component {
                                 <Select name="suggestionType" value={this.state.suggestionType} onChange={this.handleChange}>
                                     <MenuItem value={'low'}>Lowest Price</MenuItem>
                                     <MenuItem value={'suggested'}>Suggested</MenuItem>
-                                    <MenuItem value={'high'}>Higher Price</MenuItem>
+                                    <MenuItem value={'high'}>Highest Price</MenuItem>
                                 </Select>
                             </FormControl>
                     </Grid>
@@ -264,7 +268,7 @@ class SuggestScreamDialog extends Component {
         return (
             <Fragment>
                 <Button variant="contained" color="primary" size="large" onClick={this.handleOpen} className={classes.suggestButton} startIcon={<EmojiObjectsIcon />}>
-                    Suggest me a service!
+                    Quick Suggest
                 </Button>
                 <Dialog open={this.state.open} onClose={this.handleClose} fullWidth maxWidth="sm">
                     <MyButton tip="Close" onClick={this.handleClose} tipClassName={classes.closeButton}>

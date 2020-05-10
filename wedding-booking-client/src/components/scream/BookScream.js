@@ -23,7 +23,8 @@ const styles = {
 class BookScream extends Component {
 
     state = {
-        open: false
+        open: false,
+        alreadyBooked: false
     };
 
     handleOpen = () => {
@@ -41,15 +42,16 @@ class BookScream extends Component {
             username: user.credentials.username,
             date: dateTransformed
             });
-        this.setState({open: false});
+        this.setState({open: false, alreadyBooked: true});
     }
 
     render() {
 
+        const {alreadyBooked} = this.state;
         const {classes, date, price} = this.props;
         return (
             <Fragment>
-                <Button variant="contained" color="primary" onClick={this.handleOpen} className={classes.bookButton}> 
+                <Button variant="contained" color="primary" onClick={this.handleOpen} className={classes.bookButton} disabled={alreadyBooked}> 
                 BOOK IT
                 </Button>
                 <Dialog open={this.state.open} onClose={this.handleClose} fullWidth maxWidth="sm">

@@ -377,18 +377,20 @@ exports.bookScream = (req, res) => {
 exports.getAllBookings = (req, res) => {
     db
     .collection('bookings')
-    .orderBy('createdAt', 'desc')
+    .orderBy('date', 'asc')
     .get()
     .then(data => {
         let bookings = [];
         data.forEach(doc => {
-            bookings.push({
-                bookingId: doc.id,
-                username: doc.data().username,
-                date: doc.data().date,
-                screamId: doc.data().screamId,
-                createdAt: doc.data().createdAt
-            });
+            if (((new Date()).setHours(0,0,0,0)) <= ((new Date(doc.data().date)).setHours(0,0,0,0))){
+                bookings.push({
+                    bookingId: doc.id,
+                    username: doc.data().username,
+                    date: doc.data().date,
+                    screamId: doc.data().screamId,
+                    createdAt: doc.data().createdAt
+                });
+            }
         });
         return res.json(bookings);
     })
@@ -691,7 +693,7 @@ exports.suggestPackage = (req, res) => {
         if (inPriceCombinations.length >= 1)
             return inPriceCombinations;
         else
-            return res.status(500).json({error: 'Try to improve searching!'});
+            return res.status(404).json({error: 'No items found, please refine your search criteria!'});
     })
     .then(inPriceCombinations => {
         let costs = calculateCost(inPriceCombinations);
@@ -733,7 +735,7 @@ exports.suggestPackage = (req, res) => {
     })
     .catch(err => {
         res.status(500).json({error: 'No package found'});
-        //console.error(err)
+        console.error(err)
 	});
    
 };

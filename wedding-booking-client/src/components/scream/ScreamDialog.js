@@ -151,7 +151,7 @@ class ScreamDialog extends Component{
                     </MyButton>
                     <span>{commentCount} Comments</span>
                  </Grid>
-                 {photos && (
+                 {photos && photos.length > 0 && (
                      <Slide className={classes.slide} {...properties}>
                          {photos.map((photo) => {return(
                             <div key={photo} className="each-slide">

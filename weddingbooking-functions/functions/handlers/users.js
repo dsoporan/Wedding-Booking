@@ -189,7 +189,9 @@ exports.getAuthenticatedUser = (req, res) => {
     .then(data => {
         userData.bookings = []
         data.forEach(doc => {
-            userData.bookings.push(doc.data());
+            if (((new Date()).setHours(0,0,0,0)) <= ((new Date(doc.data().date)).setHours(0,0,0,0))){
+                userData.bookings.push(doc.data());
+            }
         });
         return res.json(userData);
     })

@@ -4,6 +4,11 @@ import PropTypes from 'prop-types';
 import Grid from '@material-ui/core/Grid';
 import Profile from '../components/profile/Profile';
 import BookScream from '../components/scream/BookScream';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
 
 
 
@@ -108,9 +113,14 @@ class suggestPackage extends Component {
     };
     componentWillReceiveProps(nextProps){
         if(nextProps.UI.errors){
-            this.setState({errors: nextProps.UI.errors});
+            this.setState({errors: nextProps.UI.errors, open: true});
         }
     }
+
+    handleClose = () => {
+        this.setState({open: false, errors: {}});
+        this.props.clearErrors();
+    } 
 
     handleCheckedChange = (event) => {
         this.setState({[event.target.name]: event.target.checked});
@@ -161,7 +171,7 @@ class suggestPackage extends Component {
             )} 
         </Button>);
 
-        const table = Object.keys(errors).length === 0  && firstPackage && secondPackage ? (
+        const table = Object.keys(errors).length === 0  && firstPackage ? (
             <TableContainer component={Paper} className={classes.tableContainer}>
                 <Table className={classes.table} aria-label="simple table">
                     <TableHead className={classes.head}>
@@ -207,7 +217,36 @@ class suggestPackage extends Component {
                     </TableBody>
                 </Table>
             </TableContainer>
-        ) : (<p>{errors.error}</p>);
+        ) : (
+
+            <Dialog
+                open={this.state.open}
+                onClose={this.handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">{"Try a new searching"}</DialogTitle>
+                <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                    {errors.error}
+                </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                <Button onClick={this.handleClose} color="primary" autoFocus>
+                    Ok
+                </Button>
+                </DialogActions>
+            </Dialog>
+            // <Dialog open={this.state.open} onClose={this.handleClose}>
+            //     <DialogTitle>{errors.error}</DialogTitle>
+            //     <DialogContent>Smth</DialogContent>
+            //     <DialogActions>
+            //     <Button onClick={this.handleClose} color="primary" autoFocus>
+            //         Ok
+            //     </Button>
+            //     </DialogActions>
+            // </Dialog>
+        );
 
         return (
             <Fragment>
@@ -260,7 +299,7 @@ class suggestPackage extends Component {
                                 <Select name="suggestionType" value={this.state.suggestionType} onChange={this.handleChange}>
                                     <MenuItem value={'low'}>Lowest Price</MenuItem>
                                     <MenuItem value={'suggested'}>Suggested</MenuItem>
-                                    <MenuItem value={'high'}>Higher Price</MenuItem>
+                                    <MenuItem value={'high'}>Highest Price</MenuItem>
                                 </Select>
                     </FormControl>
                 </Grid>

@@ -48,7 +48,7 @@ export const postScream = (newScream, photos) => (dispatch) => {
         return res.data;
     })
     .then((res) => {
-        if (photos[0].length > 0){
+        if (photos.length > 0 && photos[0].length > 0){
             const formData = new FormData();
             photos[0].forEach((photo, index) => {
                 formData.append('image' + index, photo, photo.name);

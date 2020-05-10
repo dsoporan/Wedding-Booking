@@ -46,5 +46,8 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "https://europe-west1-weddingbooking-e18d9.cloudfunctions.net/api"
+  "proxy": "https://europe-west1-weddingbooking-e18d9.cloudfunctions.net/api",
+  "devDependencies": {
+    "redux-devtools-extension": "^2.13.8"
+  }
 }
